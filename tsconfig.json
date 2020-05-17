@@ -25,9 +25,5 @@
 	],
 	"exclude": [
 		"*.html"
-	],
-	"awesomeTypescriptLoaderOptions": {
-		"useTranspileModule": true,
-		"forceIsolatedModules": true
-	}
+	]
 }
