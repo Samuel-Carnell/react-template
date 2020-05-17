@@ -8,5 +8,6 @@ module.exports = {
 	src,
 	build: path.resolve(root, 'dist'),
 	template: path.resolve(src, 'index.html'),
-	packageJson: path.resolve(root, 'package.json')
+	packageJson: path.resolve(root, 'package.json'),
+	tsConfig: path.resolve(root, 'tsconfig.json')
 };

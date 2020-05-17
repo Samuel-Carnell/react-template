@@ -14,6 +14,7 @@ const purgecss = require('@fullhuman/postcss-purgecss')
 const paths = require('./paths');
 
 const appPackage = require(paths.packageJson);
+const tsConfig = require(paths.tsConfig);
 
 const arrayToRegex = array => {
 	const regexString = array
@@ -34,7 +35,7 @@ module.exports = (webpackEnv, args) => {
 	const jsonExts = [ '.json' ];
 	const nodeModuleRegex = /node_modules/;
 
-	const getCssLoaders = (cssModules) => [
+	const getCssLoaders = cssModules => [
 		{
 			loader: isDevMode ? 'style-loader' : MiniCssExtractPlugin.loader
 		},
@@ -64,6 +65,11 @@ module.exports = (webpackEnv, args) => {
 
 	return {
 		resolve: {
+			modules: [
+				...(tsConfig.compilerOptions.baseUrl === undefined ?
+					[] :
+					[ tsConfig.compilerOptions.baseUrl ]),
+				'node_modules' ],
 			extensions: typescriptExts
 		},
 		output: {
