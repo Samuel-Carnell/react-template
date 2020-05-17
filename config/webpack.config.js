@@ -90,17 +90,28 @@ module.exports = (webpackEnv, args) => {
 					oneOf: [
 						{
 							include: arrayToRegex(typescriptExts),
-							loader: 'awesome-typescript-loader',
-							options: {
-								useCache: isDevMode,
-								useBabel: true,
-								babelCore: "@babel/core",
-								babelOptions: {
-									babelrc: false,
-									presets: [ "@babel/preset-env" ],
-									compact: false
+							use: [
+								'babel-loader',
+								{
+									loader: 'ts-loader',
+									options: {
+										configFile: paths.tsConfig,
+										onlyCompileBundledFiles: true,
+
+									}
 								}
-							}
+							]
+							// loader: 'awesome-typescript-loader',
+							// options: {
+							// 	useCache: isDevMode,
+							// 	useBabel: true,
+							// 	babelCore: "@babel/core",
+							// 	babelOptions: {
+							// 		babelrc: false,
+							// 		presets: [ "@babel/preset-env" ],
+							// 		compact: false
+							// 	}
+							// }
 						},
 						{
 							include: arrayToRegex(cssModuleExts),
