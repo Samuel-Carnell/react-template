@@ -10,7 +10,51 @@
 		"test": "jest --config config/jest.config.js"
 	},
 	"eslintConfig": {
-		"extends": "react-app"
+		"parser": "@typescript-eslint/parser",
+		"extends": [
+			"eslint:recommended",
+			"plugin:react/recommended",
+			"plugin:jsx-a11y/recommended",
+			"plugin:@typescript-eslint/eslint-recommended",
+			"plugin:@typescript-eslint/recommended"
+		],
+		"parserOptions": {
+			"ecmaVersion": 2015,
+			"sourceType": "module",
+			"ecmaFeatures": {
+				"jsx": true
+			},
+			"warnOnUnsupportedTypeScriptVersion": true
+		},
+		"env": {
+			"browser": true,
+			"commonjs": true,
+			"es6": true,
+			"jest": true
+		},
+		"rules": {
+			"@typescript-eslint/indent": ["warn", "tab"],
+			"@typescript-eslint/brace-style": ["warn", "1tbs"],
+			"@typescript-eslint/func-call-spacing": ["warn", "never"],
+			"@typescript-eslint/quotes": ["warn", "single"],
+			"@typescript-eslint/explicit-member-accessibility": ["error"],
+			"@typescript-eslint/semi": ["error"],
+			"@typescript-eslint/no-misused-new": ["error"],
+			"@typescript-eslint/no-extra-semi": ["error"],
+			"@typescript-eslint/no-dupe-class-members": ["error"],
+			"no-console": ["warn"],
+			"eol-last": ["warn", "never"],
+			"linebreak-style": ["warn", "unix"],
+			"space-before-blocks": ["warn", "always"],
+			"keyword-spacing": [
+				"warn",
+				{
+					"before": true,
+					"after": true
+				}
+			]
+		},
+		"ignorePatterns": ["!src/**/*.{ts,tsx}"]
 	},
 	"browserslist": {
 		"production": [
@@ -29,6 +73,8 @@
 		"@babel/preset-env": "^7.9.6",
 		"@fullhuman/postcss-purgecss": "^2.2.0",
 		"@svgr/webpack": "^5.4.0",
+		"@typescript-eslint/eslint-plugin": "^2.34.0",
+		"@typescript-eslint/parser": "^2.34.0",
 		"autoprefixer": "^9.7.6",
 		"awesome-typescript-loader": "^5.2.1",
 		"camelcase": "^6.0.0",
@@ -37,6 +83,10 @@
 		"docsify-cli": "^4.4.0",
 		"enzyme": "^3.11.0",
 		"enzyme-adapter-react-16": "^1.15.2",
+		"eslint": "^7.0.0",
+		"eslint-plugin-import": "^2.20.2",
+		"eslint-plugin-jsx-a11y": "^6.2.3",
+		"eslint-plugin-react": "^7.20.0",
 		"file-loader": "^6.0.0",
 		"html-webpack-plugin": "^4.3.0",
 		"jest": "^26.0.1",

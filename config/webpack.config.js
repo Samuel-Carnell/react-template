@@ -18,10 +18,10 @@ const tsConfig = require(paths.tsConfig);
 
 const arrayToRegex = array => {
 	const regexString = array
-		.map(str => str.replace('.', '\.'))
+		.map(str => str.replace('.', '\.')) // eslint-disable-line no-useless-escape
 		.join('|');
 	return new RegExp(`(${regexString})$`, 'u');
-}
+};
 
 module.exports = (webpackEnv, args) => {
 	const mode = args.mode || env.NODE_ENV;
@@ -205,4 +205,4 @@ module.exports = (webpackEnv, args) => {
 			])
 		]
 	};
-}
+};
