@@ -33,19 +33,52 @@
 			"jest": true
 		},
 		"rules": {
-			"@typescript-eslint/indent": ["warn", "tab"],
-			"@typescript-eslint/brace-style": ["warn", "1tbs"],
-			"@typescript-eslint/func-call-spacing": ["warn", "never"],
-			"@typescript-eslint/quotes": ["warn", "single"],
-			"@typescript-eslint/explicit-member-accessibility": ["error"],
-			"@typescript-eslint/semi": ["error"],
-			"@typescript-eslint/no-misused-new": ["error"],
-			"@typescript-eslint/no-extra-semi": ["error"],
-			"@typescript-eslint/no-dupe-class-members": ["error"],
-			"no-console": ["warn"],
-			"eol-last": ["warn", "never"],
-			"linebreak-style": ["warn", "unix"],
-			"space-before-blocks": ["warn", "always"],
+			"@typescript-eslint/indent": [
+				"warn",
+				"tab"
+			],
+			"@typescript-eslint/brace-style": [
+				"warn",
+				"1tbs"
+			],
+			"@typescript-eslint/func-call-spacing": [
+				"warn",
+				"never"
+			],
+			"@typescript-eslint/quotes": [
+				"warn",
+				"single"
+			],
+			"@typescript-eslint/explicit-member-accessibility": [
+				"error"
+			],
+			"@typescript-eslint/semi": [
+				"error"
+			],
+			"@typescript-eslint/no-misused-new": [
+				"error"
+			],
+			"@typescript-eslint/no-extra-semi": [
+				"error"
+			],
+			"@typescript-eslint/no-dupe-class-members": [
+				"error"
+			],
+			"no-console": [
+				"warn"
+			],
+			"eol-last": [
+				"warn",
+				"never"
+			],
+			"linebreak-style": [
+				"warn",
+				"unix"
+			],
+			"space-before-blocks": [
+				"warn",
+				"always"
+			],
 			"keyword-spacing": [
 				"warn",
 				{
@@ -54,7 +87,9 @@
 				}
 			]
 		},
-		"ignorePatterns": ["!src/**/*.{ts,tsx}"]
+		"ignorePatterns": [
+			"!src/**/*.{ts,tsx}"
+		]
 	},
 	"browserslist": {
 		"production": [
