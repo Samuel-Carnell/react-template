@@ -3,7 +3,8 @@ import Logo from 'assets/logo.svg'
 import styles from './app.styles.css';
 import './app.css';
 
-function App() {
+function App(): JSX.Element {
+	const a = true;
 	return (
 		<div className={styles.app}>
 			<header className={styles.appHeader}>
@@ -18,7 +19,7 @@ function App() {
 					rel="noopener noreferrer"
 				>
 					Learn React
-        </a>
+				</a>
 			</header>
 		</div>
 	);
