@@ -35,7 +35,7 @@ module.exports = (webpackEnv, args) => {
 	const jsonExts = [ '.json' ];
 	const nodeModuleRegex = /node_modules/;
 
-	const getCssLoaders = cssModules => [
+	const getCssLoaders = extraCssOptions => [
 		{
 			loader: isDevMode ? 'style-loader' : MiniCssExtractPlugin.loader
 		},
@@ -44,7 +44,7 @@ module.exports = (webpackEnv, args) => {
 			options: {
 				sourceMap: !isDevMode,
 				importLoaders: 1,
-				modules: cssModules
+				...extraCssOptions
 			}
 		},
 		{
@@ -116,13 +116,18 @@ module.exports = (webpackEnv, args) => {
 						{
 							include: arrayToRegex(cssModuleExts),
 							use: getCssLoaders({
-								localIdentName: '[name]__[local]--[hash:8]'
+								localsConvention: 'camelCase',
+								modules: {
+									localIdentName: '[name]__[local]--[hash:8]'
+								}
 							})
 						},
 						{
 							include: arrayToRegex(cssExts),
 							exclude: arrayToRegex(cssModuleExts),
-							use: getCssLoaders(false)
+							use: getCssLoaders({
+								modules: false
+							})
 						},
 						{
 							include: arrayToRegex(svgExts),
