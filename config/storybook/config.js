@@ -1,6 +1,6 @@
-// import 'storybook-addon-react-docgen/register';
+const { addDecorator } = require('@storybook/react');
+const { withA11y } = require('@storybook/addon-a11y');
+const { withKnobs } = require('@storybook/addon-knobs');
 
-// const { addDecorator } = require('@storybook/react');
-// const { withPropsTable } = require('storybook-addon-react-docgen');
-
-// addDecorator(withPropsTable);
+addDecorator(withA11y);
+addDecorator(withKnobs);

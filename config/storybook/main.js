@@ -3,7 +3,12 @@ const createWebpackConfig = require('../webpack.config');
 
 module.exports = {
 	stories: ['../../src/**/*.stories.*'],
-	addons: [ ],
+	addons: [
+		'@storybook/addon-viewport/register',
+		'@storybook/addon-actions/register',
+		'@storybook/addon-a11y/register',
+		'@storybook/addon-knobs/register'
+	],
 	webpackFinal: async defaultConfig => {
 		const customConfig = createWebpackConfig({}, {
 			mode: 'development'

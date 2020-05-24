@@ -4,7 +4,7 @@ import App from './app/app';
 
 ReactDOM.render(
 	<React.StrictMode>
-		<App />
+		<App name="My Awesome Project"/>
 	</React.StrictMode>,
 	document.getElementById('root')
 );

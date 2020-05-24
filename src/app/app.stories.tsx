@@ -1,9 +1,12 @@
 import React from 'react';
 import App from './app';
+import { text, boolean, number } from "@storybook/addon-knobs";
 
 export default {
 	title: 'Application',
-	component: App
+	component: App,
 };
 
-export const Default = (): JSX.Element => <App />;
+export const Default = (): JSX.Element => {
+	return <App name={text('App Name', 'My Awesome Project')}/>;
+};
