@@ -13,9 +13,9 @@ function App(props: AppProps): JSX.Element {
 			<div className="flex flex-col md:flex-row">
 				<Logo className={styles.appLogo} />
 				<div className="text-center px-4 md:text-left md:px-0">
-					<h1 className="font-light mt-4 text-4xl md:text-5xl">{props.name}</h1>
+					<h1 id="app-name" className="font-light mt-4 text-4xl md:text-5xl">{props.name}</h1>
 					<p>
-						Edit <code>src/App.tsx</code> and save to reload.
+						Edit <code>app/App.tsx</code> and save to reload.
 					</p>
 				</div>
 			</div>

@@ -3,7 +3,7 @@ const paths = require('./paths');
 module.exports = {
 	rootDir: paths.root,
 	roots: [
-		'<rootDir>/src'
+		'<rootDir>/src/'
 	],
 	collectCoverageFrom: [
 		'src/**/*.{js,jsx,ts,tsx}',
@@ -26,10 +26,6 @@ module.exports = {
 		'[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$',
 		'^.+\\.module\\.(css|sass|scss)$'
 	],
-	modulePaths: [],
-	moduleNameMapper: {
-		'^react-native$': 'react-native-web',
-		'^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy'
-	},
+	moduleDirectories: ['<rootDir>/src/', 'node_modules'],
 	moduleFileExtensions: [ 'js', 'ts', 'tsx', 'json', 'jsx', 'node' ]
 };

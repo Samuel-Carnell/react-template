@@ -14,6 +14,7 @@
 		"editor.tabSize": 2,
 		"editor.detectIndentation": false,
 		"editor.insertSpaces": false,
-		"files.trimTrailingWhitespace": true
+		"files.trimTrailingWhitespace": true,
+		"jest.pathToConfig": "config/jest.config.js"
 	}
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import App from './app';
-import { text, boolean, number } from "@storybook/addon-knobs";
+import { text } from '@storybook/addon-knobs';
 
 export default {
 	title: 'Application',
