@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const autoPrefixer = require('autoprefixer');
@@ -181,6 +182,9 @@ module.exports = (webpackEnv, args) => {
 			}),
 			new CheckerPlugin(),
 			new CleanWebpackPlugin(),
+			new WebpackBuildNotifierPlugin({
+				title: 'My Awesome Project'
+			}),
 			...(isDevMode ? [] : [
 				new MiniCssExtractPlugin({
 					filename: 'css/[name].[contenthash:8].css',
