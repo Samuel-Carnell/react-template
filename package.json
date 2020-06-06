@@ -5,10 +5,15 @@
 	"scripts": {
 		"build:app-dev": "webpack --config config/webpack.config.js --mode development src/index.tsx",
 		"build:app-prod": "webpack --config config/webpack.config.js --mode production src/index.tsx",
+		"build:storybook": "build-storybook -config-dir ./config/storybook",
 		"serve:app": "webpack-dev-server --config config/webpack.config.js --port 8080 --host 0.0.0.0",
 		"serve:docs": "docsify serve --open --port 8081",
 		"serve:storybook": "start-storybook --port 8082 --config-dir ./config/storybook",
-		"test": "jest --config config/jest.config.js"
+		"test": "jest --config config/jest.config.js",
+		"check:style": "prettier --check ./src/**/*.{js,jsx,ts,tsx}",
+		"check:lint": "eslint ./src/**/*.{js,jsx,ts,tsx}",
+		"fix:style": "prettier --write ./src/**/*.{js,jsx,ts,tsx}",
+		"fix:lint": "eslint --fix ./src/**/*.{js,jsx,ts,tsx}"
 	},
 	"eslintConfig": {
 		"parser": "@typescript-eslint/parser",
