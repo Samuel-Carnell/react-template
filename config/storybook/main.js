@@ -12,10 +12,8 @@ module.exports = {
 		'@storybook/addon-a11y/register',
 		'@storybook/addon-knobs/register'
 	],
-	webpackFinal: async defaultConfig => {
-		const customConfig = createWebpackConfig({}, {
-			mode: 'development'
-		});
+	webpackFinal: async (defaultConfig) => {
+		const customConfig = createWebpackConfig({}, { mode: 'development' });
 		const config = {
 			...defaultConfig,
 			resolve: {

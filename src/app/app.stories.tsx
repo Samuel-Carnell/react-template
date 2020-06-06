@@ -4,9 +4,9 @@ import { text } from '@storybook/addon-knobs';
 
 export default {
 	title: 'Application',
-	component: App,
+	component: App
 };
 
 export const Default = (): JSX.Element => {
-	return <App name={text('App Name', 'My Awesome Project')}/>;
+	return <App name={text('App Name', 'My Awesome Project')} />;
 };

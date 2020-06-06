@@ -10,16 +10,16 @@ const { CheckerPlugin } = require('awesome-typescript-loader');
 const autoPrefixer = require('autoprefixer');
 const postcssNormalize = require('postcss-normalize');
 const tailwind = require('tailwindcss');
-const purgecss = require('@fullhuman/postcss-purgecss')
+const purgecss = require('@fullhuman/postcss-purgecss');
 
 const paths = require('./paths');
 
 const appPackage = require(paths.packageJson);
 const tsConfig = require(paths.tsConfig);
 
-const arrayToRegex = array => {
+const arrayToRegex = (array) => {
 	const regexString = array
-		.map(str => str.replace('.', '\.')) // eslint-disable-line no-useless-escape
+		.map((str) => str.replace('.', '.')) // eslint-disable-line no-useless-escape
 		.join('|');
 	return new RegExp(`(${regexString})$`, 'u');
 };
@@ -28,15 +28,15 @@ module.exports = (webpackEnv, args) => {
 	const mode = args.mode || env.NODE_ENV;
 	const isDevMode = mode !== 'production';
 
-	const cssExts = [ '.css' ];
-	const cssModuleExts = [ '.module.css', '.styles.css' ];
-	const typescriptExts = [ '.ts', '.tsx', '.js', '.jsx' ];
-	const svgExts = [ '.svg' ];
-	const htmlExts = [ '.html', '.htm' ];
-	const jsonExts = [ '.json' ];
+	const cssExts = ['.css'];
+	const cssModuleExts = ['.module.css', '.styles.css'];
+	const typescriptExts = ['.ts', '.tsx', '.js', '.jsx'];
+	const svgExts = ['.svg'];
+	const htmlExts = ['.html', '.htm'];
+	const jsonExts = ['.json'];
 	const nodeModuleRegex = /node_modules/;
 
-	const getCssLoaders = extraCssOptions => [
+	const getCssLoaders = (extraCssOptions) => [
 		{
 			loader: isDevMode ? 'style-loader' : MiniCssExtractPlugin.loader
 		},
@@ -56,9 +56,13 @@ module.exports = (webpackEnv, args) => {
 					tailwind(),
 					autoPrefixer(),
 					postcssNormalize(),
-					...(isDevMode ? [] : [ purgecss({
-						content: [ './src/**/*.html', './src/**/*.tsx' ],
-					}) ])
+					...(isDevMode
+						? []
+						: [
+								purgecss({
+									content: ['./src/**/*.html', './src/**/*.tsx']
+								})
+						  ])
 				]
 			}
 		}
@@ -67,21 +71,19 @@ module.exports = (webpackEnv, args) => {
 	return {
 		resolve: {
 			modules: [
-				...(tsConfig.compilerOptions.baseUrl === undefined ?
-					[] :
-					[ tsConfig.compilerOptions.baseUrl ]),
-				'node_modules' ],
+				...(tsConfig.compilerOptions.baseUrl === undefined
+					? []
+					: [tsConfig.compilerOptions.baseUrl]),
+				'node_modules'
+			],
 			extensions: typescriptExts
 		},
 		output: {
 			path: paths.build,
-			filename: isDevMode ?
-				'js/[name].js' :
-				'js/[name].[contenthash:8].js',
-			chunkFilename: isDevMode ?
-				'js/[name].chunk.js' :
-				'js/[name].[contenthash:8].js'
-
+			filename: isDevMode ? 'js/[name].js' : 'js/[name].[contenthash:8].js',
+			chunkFilename: isDevMode
+				? 'js/[name].chunk.js'
+				: 'js/[name].[contenthash:8].js'
 		},
 		devtool: isDevMode ? 'cheap-module-source-map' : 'source-map',
 		module: {
@@ -97,8 +99,7 @@ module.exports = (webpackEnv, args) => {
 									loader: 'ts-loader',
 									options: {
 										configFile: paths.tsConfig,
-										onlyCompileBundledFiles: true,
-
+										onlyCompileBundledFiles: true
 									}
 								}
 							]
@@ -124,7 +125,7 @@ module.exports = (webpackEnv, args) => {
 							loader: '@svgr/webpack'
 						},
 						{
-							exclude: arrayToRegex([ ...jsonExts, ...htmlExts ]),
+							exclude: arrayToRegex([...jsonExts, ...htmlExts]),
 							loader: 'file-loader',
 							options: {
 								name: 'assets/[name].[hash:8].[ext]'
@@ -159,59 +160,63 @@ module.exports = (webpackEnv, args) => {
 				chunks: 'all'
 			},
 			runtimeChunk: {
-				name: entrypoint => `runtime~${entrypoint.name}`
+				name: (entrypoint) => `runtime~${entrypoint.name}`
 			}
 		},
 		plugins: [
 			new HtmlWebpackPlugin({
 				template: paths.template,
-				...(isDevMode ? {} : {
-					minify: {
-						removeComments: true,
-						collapseWhitespace: true,
-						removeRedundantAttributes: true,
-						useShortDoctype: true,
-						removeEmptyAttributes: true,
-						removeStyleLinkTypeAttributes: true,
-						keepClosingSlash: true,
-						minifyJS: true,
-						minifyCSS: true,
-						minifyURLs: true,
-					}
-				})
+				...(isDevMode
+					? {}
+					: {
+							minify: {
+								removeComments: true,
+								collapseWhitespace: true,
+								removeRedundantAttributes: true,
+								useShortDoctype: true,
+								removeEmptyAttributes: true,
+								removeStyleLinkTypeAttributes: true,
+								keepClosingSlash: true,
+								minifyJS: true,
+								minifyCSS: true,
+								minifyURLs: true
+							}
+					  })
 			}),
 			new CheckerPlugin(),
 			new CleanWebpackPlugin(),
 			new WebpackBuildNotifierPlugin({
 				title: 'My Awesome Project'
 			}),
-			...(isDevMode ? [] : [
-				new MiniCssExtractPlugin({
-					filename: 'css/[name].[contenthash:8].css',
-					chunkFilename: 'css/[name].[contenthash:8].chunk.css',
-				}),
-				new ManifestPlugin({
-					fileName: 'manifest.json',
-					seed: appPackage.manifest,
-					generate: (seed, files, entrypoints) => {
-						const manifestFiles = files.reduce((manifest, file) => {
-							if (!file.name.endsWith('.map')) {
-								manifest[ file.name ] = file.path;
-							}
-							return manifest;
-						}, seed);
-						const entrypointFiles = entrypoints.main.filter(
-							fileName => !fileName.endsWith('.map')
-						);
+			...(isDevMode
+				? []
+				: [
+						new MiniCssExtractPlugin({
+							filename: 'css/[name].[contenthash:8].css',
+							chunkFilename: 'css/[name].[contenthash:8].chunk.css'
+						}),
+						new ManifestPlugin({
+							fileName: 'manifest.json',
+							seed: appPackage.manifest,
+							generate: (seed, files, entrypoints) => {
+								const manifestFiles = files.reduce((manifest, file) => {
+									if (!file.name.endsWith('.map')) {
+										manifest[file.name] = file.path;
+									}
+									return manifest;
+								}, seed);
+								const entrypointFiles = entrypoints.main.filter(
+									(fileName) => !fileName.endsWith('.map')
+								);
 
-						return {
-							name: appPackage.name,
-							files: manifestFiles,
-							entrypoints: entrypointFiles
-						};
-					},
-				})
-			])
+								return {
+									name: appPackage.name,
+									files: manifestFiles,
+									entrypoints: entrypointFiles
+								};
+							}
+						})
+				  ])
 		]
 	};
 };
