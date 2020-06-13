@@ -29,7 +29,8 @@ module.exports = {
 					successIcon: iconPath,
 					warningIcon: iconPath,
 					failureIcon: iconPath,
-					compileIcon: iconPath
+					compileIcon: iconPath,
+					suppressSuccess: true
 				})
 			]
 		};
