@@ -69,6 +69,7 @@ module.exports = (webpackEnv, args) => {
 	];
 
 	return {
+		stats: isDevMode ? 'normal' : 'verbose',
 		resolve: {
 			modules: [
 				...(tsConfig.compilerOptions.baseUrl === undefined
@@ -218,6 +219,14 @@ module.exports = (webpackEnv, args) => {
 							}
 						})
 				  ])
-		]
+		],
+		devServer: {
+			compress: true,
+			clientLogLevel: 'none',
+			hot: true,
+			quiet: true,
+			historyApiFallback: true,
+			open: true
+		}
 	};
 };
