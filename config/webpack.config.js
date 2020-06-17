@@ -188,7 +188,8 @@ module.exports = (webpackEnv, args) => {
 			new CleanWebpackPlugin(),
 			new WebpackBuildNotifierPlugin({
 				title: 'My Awesome Project',
-				suppressSuccess: true
+				suppressSuccess: true,
+				suppressWarning: true
 			}),
 			...(isDevMode
 				? []
