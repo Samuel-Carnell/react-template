@@ -228,6 +228,9 @@ module.exports = (webpackEnv, args) => {
 			quiet: true,
 			historyApiFallback: true,
 			open: true
+		},
+		watchOptions: {
+			ignored: /node_modules/
 		}
 	};
 };
