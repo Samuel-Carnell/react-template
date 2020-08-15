@@ -1,4 +1,5 @@
 const { env } = require('process');
+const globToRegExp = require('glob-to-regexp');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
@@ -17,26 +18,37 @@ const paths = require('./paths');
 const appPackage = require(paths.packageJson);
 const tsConfig = require(paths.tsConfig);
 
-const arrayToRegex = (array) => {
-	const regexString = array
-		.map((str) => str.replace('.', '.')) // eslint-disable-line no-useless-escape
-		.join('|');
-	return new RegExp(`(${regexString})$`, 'u');
-};
+const globToExactRegExp = (globStr) =>
+	globToRegExp(globStr, {
+		extended: true,
+		globstar: true
+	});
 
+const useFirstMatch = (moduleRules) => {
+	let matchedConditions = [];
+	return moduleRules.map(({ test, use, ...moduleRule }) => {
+		const excludeMatchedConditions = { not: matchedConditions };
+
+		const moduleRuleExcludingMatchedConditions = {
+			test:
+				test == null
+					? excludeMatchedConditions
+					: {
+							and: [test, excludeMatchedConditions]
+					  },
+			use: Array.isArray(use) ? use : [use],
+			...moduleRule
+		};
+
+		matchedConditions = [...matchedConditions, test];
+		return moduleRuleExcludingMatchedConditions;
+	});
+};
 module.exports = (webpackEnv, args) => {
 	const mode = args.mode || env.NODE_ENV;
 	const isDevMode = mode !== 'production';
 
-	const cssExts = ['.css'];
-	const cssModuleExts = ['.module.css', '.styles.css'];
-	const typescriptExts = ['.ts', '.tsx', '.js', '.jsx'];
-	const svgExts = ['.svg'];
-	const htmlExts = ['.html', '.htm'];
-	const jsonExts = ['.json'];
-	const nodeModuleRegex = /node_modules/;
-
-	const getCssLoaders = (extraCssOptions) => [
+	const getCssLoaders = ({ useCssModules }) => [
 		{
 			loader: isDevMode ? 'style-loader' : MiniCssExtractPlugin.loader
 		},
@@ -45,7 +57,14 @@ module.exports = (webpackEnv, args) => {
 			options: {
 				sourceMap: !isDevMode,
 				importLoaders: 1,
-				...extraCssOptions
+				...(!useCssModules
+					? {}
+					: {
+							localsConvention: 'camelCase',
+							modules: {
+								localIdentName: '[name]__[local]--[hash:8]'
+							}
+					  })
 			}
 		},
 		{
@@ -60,13 +79,15 @@ module.exports = (webpackEnv, args) => {
 						? []
 						: [
 								purgecss({
-									content: ['./src/**/*.html', './src/**/*.tsx']
+									content: [`${path.src}/**/*.{html,tsx,jsx}`]
 								})
 						  ])
 				]
 			}
 		}
 	];
+
+	const getFilename = () => (isDevMode ? '[name]' : '[name].[contenthash:8]');
 
 	return {
 		stats: isDevMode ? 'normal' : 'verbose',
@@ -77,23 +98,22 @@ module.exports = (webpackEnv, args) => {
 					: [tsConfig.compilerOptions.baseUrl]),
 				'node_modules'
 			],
-			extensions: typescriptExts
+			extensions: ['.tsx', '.ts', '.js', '.jsx']
 		},
 		output: {
 			path: paths.build,
-			filename: isDevMode ? 'js/[name].js' : 'js/[name].[contenthash:8].js',
-			chunkFilename: isDevMode
-				? 'js/[name].chunk.js'
-				: 'js/[name].[contenthash:8].js'
+			filename: `js/${getFilename()}.js`,
+			chunkFilename: `js/${getFilename()}.chunk.js`
 		},
 		devtool: isDevMode ? 'cheap-module-source-map' : 'source-map',
 		module: {
 			rules: [
 				{
-					exclude: nodeModuleRegex,
-					oneOf: [
+					exclude: [paths.htmlTemplate, globToExactRegExp('**/*.json')],
+					oneOf: useFirstMatch([
 						{
-							include: arrayToRegex(typescriptExts),
+							test: globToExactRegExp(`**/*.{tsx,ts,jsx,js}`),
+							exclude: /node_modules/,
 							use: [
 								'babel-loader',
 								{
@@ -106,33 +126,28 @@ module.exports = (webpackEnv, args) => {
 							]
 						},
 						{
-							include: arrayToRegex(cssModuleExts),
-							use: getCssLoaders({
-								localsConvention: 'camelCase',
-								modules: {
-									localIdentName: '[name]__[local]--[hash:8]'
+							test: globToExactRegExp('**/*.{styles,module}.css'),
+							use: getCssLoaders({ useCssModules: true })
+						},
+						{
+							test: globToExactRegExp('**/*.css'),
+							use: getCssLoaders({ useCssModules: false })
+						},
+						{
+							test: globToExactRegExp('**/*.svg'),
+							use: {
+								loader: '@svgr/webpack'
+							}
+						},
+						{
+							use: {
+								loader: 'file-loader',
+								options: {
+									name: 'assets/[name].[hash:8].[ext]'
 								}
-							})
-						},
-						{
-							include: arrayToRegex(cssExts),
-							exclude: arrayToRegex(cssModuleExts),
-							use: getCssLoaders({
-								modules: false
-							})
-						},
-						{
-							include: arrayToRegex(svgExts),
-							loader: '@svgr/webpack'
-						},
-						{
-							exclude: arrayToRegex([...jsonExts, ...htmlExts]),
-							loader: 'file-loader',
-							options: {
-								name: 'assets/[name].[hash:8].[ext]'
 							}
 						}
-					]
+					])
 				}
 			]
 		},
@@ -166,7 +181,7 @@ module.exports = (webpackEnv, args) => {
 		},
 		plugins: [
 			new HtmlWebpackPlugin({
-				template: paths.template,
+				template: paths.htmlTemplate,
 				...(isDevMode
 					? {}
 					: {
@@ -195,8 +210,8 @@ module.exports = (webpackEnv, args) => {
 				? []
 				: [
 						new MiniCssExtractPlugin({
-							filename: 'css/[name].[contenthash:8].css',
-							chunkFilename: 'css/[name].[contenthash:8].chunk.css'
+							filename: `css/${getFilename()}.css`,
+							chunkFilename: `css/${getFilename()}.chunk.css`
 						}),
 						new ManifestPlugin({
 							fileName: 'manifest.json',

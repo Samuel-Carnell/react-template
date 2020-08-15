@@ -6,7 +6,7 @@ module.exports = {
 	root,
 	src,
 	build: path.resolve(root, 'dist'),
-	template: path.resolve(src, 'index.html'),
+	htmlTemplate: path.resolve(src, 'index.html'),
 	packageJson: path.resolve(root, 'package.json'),
 	tsConfig: path.resolve(root, 'tsconfig.json'),
 	tailwindConfig: path.resolve(root, 'tailwind.config.js')
