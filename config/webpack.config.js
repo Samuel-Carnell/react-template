@@ -12,11 +12,29 @@ const autoPrefixer = require('autoprefixer');
 const postcssNormalize = require('postcss-normalize');
 const tailwind = require('tailwindcss');
 const purgecss = require('@fullhuman/postcss-purgecss');
-
+const postcssImport = require('postcss-import');
 const paths = require('./paths');
 
 const appPackage = require(paths.packageJson);
 const tsConfig = require(paths.tsConfig);
+
+const getTsConfigBasePath = () => {
+	const { compilerOptions } = tsConfig;
+	if (compilerOptions == null || compilerOptions.baseUrl == null) {
+		return null;
+	}
+
+	return compilerOptions.baseUrl;
+};
+
+const getBasePathsToResolveFrom = () => {
+	const tsConfigBasePath = getTsConfigBasePath();
+	console.log(tsConfigBasePath);
+	return [
+		...(tsConfigBasePath === null ? [] : [tsConfigBasePath]),
+		'node_modules'
+	];
+};
 
 const globToExactRegExp = (globStr) =>
 	globToRegExp(globStr, {
@@ -44,6 +62,7 @@ const useFirstMatch = (moduleRules) => {
 		return moduleRuleExcludingMatchedConditions;
 	});
 };
+
 module.exports = (webpackEnv, args) => {
 	const mode = args.mode || env.NODE_ENV;
 	const isDevMode = mode !== 'production';
@@ -72,6 +91,10 @@ module.exports = (webpackEnv, args) => {
 			options: {
 				ident: 'postcss',
 				plugins: () => [
+					postcssImport({
+						root: paths.root,
+						path: getBasePathsToResolveFrom()
+					}),
 					tailwind(),
 					autoPrefixer(),
 					postcssNormalize(),
@@ -90,14 +113,10 @@ module.exports = (webpackEnv, args) => {
 	const getFilename = () => (isDevMode ? '[name]' : '[name].[contenthash:8]');
 
 	return {
+		context: paths.root,
 		stats: isDevMode ? 'normal' : 'verbose',
 		resolve: {
-			modules: [
-				...(tsConfig.compilerOptions.baseUrl === undefined
-					? []
-					: [tsConfig.compilerOptions.baseUrl]),
-				'node_modules'
-			],
+			modules: getBasePathsToResolveFrom(),
 			extensions: ['.tsx', '.ts', '.js', '.jsx']
 		},
 		output: {
