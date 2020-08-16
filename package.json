@@ -111,6 +111,7 @@
 		"jest-enzyme": "^7.1.2",
 		"mini-css-extract-plugin": "^0.9.0",
 		"optimize-css-assets-webpack-plugin": "^5.0.3",
+		"postcss-import": "^12.0.1",
 		"postcss-loader": "^3.0.0",
 		"postcss-normalize": "^9.0.0",
 		"prettier": "^2.0.5",
