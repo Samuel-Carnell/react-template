@@ -134,7 +134,16 @@ module.exports = (webpackEnv, args) => {
 							test: globToExactRegExp(`**/*.{tsx,ts,jsx,js}`),
 							exclude: /node_modules/,
 							use: [
-								'babel-loader',
+								{
+									loader: 'babel-loader',
+									options: {
+										presets: ['@babel/preset-env'],
+										cacheDirectory: isDevMode,
+										cacheCompression: true,
+										babelrc: false,
+										configFile: false
+									}
+								},
 								{
 									loader: 'ts-loader',
 									options: {
