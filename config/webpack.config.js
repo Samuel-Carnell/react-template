@@ -1,5 +1,5 @@
+const path = require('path');
 const { env } = require('process');
-const globToRegExp = require('glob-to-regexp');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
@@ -29,18 +29,11 @@ const getTsConfigBasePath = () => {
 
 const getBasePathsToResolveFrom = () => {
 	const tsConfigBasePath = getTsConfigBasePath();
-	console.log(tsConfigBasePath);
 	return [
 		...(tsConfigBasePath === null ? [] : [tsConfigBasePath]),
 		'node_modules'
 	];
 };
-
-const globToExactRegExp = (globStr) =>
-	globToRegExp(globStr, {
-		extended: true,
-		globstar: true
-	});
 
 const useFirstMatch = (moduleRules) => {
 	let matchedConditions = [];
@@ -102,10 +95,11 @@ module.exports = (webpackEnv, args) => {
 						? []
 						: [
 								purgecss({
-									content: [`${path.src}/**/*.{html,tsx,jsx}`]
+									content: [`${paths.asPosix(paths.src)}/**/*.{html,tsx,jsx}`]
 								})
 						  ])
-				]
+				],
+				sourceMap: !isDevMode
 			}
 		}
 	];
@@ -128,11 +122,11 @@ module.exports = (webpackEnv, args) => {
 		module: {
 			rules: [
 				{
-					exclude: [paths.htmlTemplate, globToExactRegExp('**/*.json')],
+					exclude: [paths.htmlTemplate, paths.hasExtension('json')],
 					oneOf: useFirstMatch([
 						{
-							test: globToExactRegExp(`**/*.{tsx,ts,jsx,js}`),
-							exclude: /node_modules/,
+							test: paths.hasExtension('tsx', 'ts', 'jsx', 'mjs', 'js'),
+							include: paths.src,
 							use: [
 								{
 									loader: 'babel-loader',
@@ -154,15 +148,15 @@ module.exports = (webpackEnv, args) => {
 							]
 						},
 						{
-							test: globToExactRegExp('**/*.{styles,module}.css'),
+							test: paths.hasExtension('styles.css', 'module.css'),
 							use: getCssLoaders({ useCssModules: true })
 						},
 						{
-							test: globToExactRegExp('**/*.css'),
+							test: paths.hasExtension('css'),
 							use: getCssLoaders({ useCssModules: false })
 						},
 						{
-							test: globToExactRegExp('**/*.svg'),
+							test: paths.hasExtension('svg'),
 							use: {
 								loader: '@svgr/webpack'
 							}
