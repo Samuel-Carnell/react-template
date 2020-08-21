@@ -1,11 +1,12 @@
 const path = require('path');
+const paths = require('../paths');
 const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 const createWebpackConfig = require('../webpack.config');
 
 const iconPath = path.resolve(__dirname, './icon.png');
 
 module.exports = {
-	stories: ['../../src/**/*.stories.*'],
+	stories: [`${paths.asPosix(paths.src)}/**/*.stories.*`],
 	addons: [
 		'@storybook/addon-viewport/register',
 		'@storybook/addon-actions/register',
@@ -18,10 +19,17 @@ module.exports = {
 			...defaultConfig,
 			resolve: {
 				...defaultConfig.resolve,
-				extensions: customConfig.resolve.extensions,
-				modules: customConfig.resolve.modules
+				...customConfig.resolve
 			},
-			module: { ...defaultConfig.module, ...customConfig.module },
+			module: {
+				...defaultConfig.module,
+				rules: [
+					{
+						exclude: paths.hasExtension('ejs'),
+						rules: customConfig.module.rules
+					}
+				]
+			},
 			plugins: [
 				...defaultConfig.plugins,
 				new WebpackBuildNotifierPlugin({

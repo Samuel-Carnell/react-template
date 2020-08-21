@@ -103,7 +103,6 @@
 		"eslint-plugin-jsx-a11y": "^6.2.3",
 		"eslint-plugin-react": "^7.20.0",
 		"file-loader": "^6.0.0",
-		"glob-to-regexp": "^0.4.1",
 		"html-webpack-plugin": "^4.3.0",
 		"jest": "^26.0.1",
 		"jest-environment-jsdom-fourteen": "^1.0.1",
