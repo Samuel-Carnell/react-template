@@ -176,13 +176,22 @@ module.exports = (webpackEnv, args) => {
 			minimize: !isDevMode,
 			minimizer: [
 				new TerserPlugin({
-					sourceMap: true,
-					extractComments: true
+					sourceMap: !isDevMode,
+					terserOptions: {
+						module: true,
+						toplevel: true,
+						safari10: true,
+						output: {
+							comments: false,
+							ascii_only: true
+						}
+					}
 				}),
 				new OptimizeCSSAssetsPlugin({
 					cssProcessorOptions: {
 						map: {
-							inline: false
+							inline: false,
+							annotation: true
 						}
 					}
 				})
