@@ -1,13 +1,12 @@
 const { env } = require('process');
 const globToRegExp = require('glob-to-regexp');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { CheckerPlugin } = require('awesome-typescript-loader');
 const autoPrefixer = require('autoprefixer');
 const postcssNormalize = require('postcss-normalize');
 const tailwind = require('tailwindcss');
@@ -173,15 +172,9 @@ module.exports = (webpackEnv, args) => {
 		optimization: {
 			minimize: !isDevMode,
 			minimizer: [
-				new UglifyJsPlugin({
+				new TerserPlugin({
 					sourceMap: true,
-					extractComments: true,
-					uglifyOptions: {
-						toplevel: true,
-						mangle: {
-							eval: true
-						}
-					}
+					extractComments: true
 				}),
 				new OptimizeCSSAssetsPlugin({
 					cssProcessorOptions: {
@@ -218,7 +211,6 @@ module.exports = (webpackEnv, args) => {
 							}
 					  })
 			}),
-			new CheckerPlugin(),
 			new CleanWebpackPlugin(),
 			new WebpackBuildNotifierPlugin({
 				title: 'My Awesome Project',
