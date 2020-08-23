@@ -22,13 +22,14 @@
 	},
 	"eslintConfig": {
 		"extends": [
-			"react-app",
 			"prettier",
 			"prettier/@typescript-eslint",
-			"prettier/react"
+			"prettier/react",
+			"react-app"
 		],
 		"ignorePatterns": [
-			"/!(src)/**"
+			"/config/**",
+			"/*"
 		]
 	},
 	"prettier": {
