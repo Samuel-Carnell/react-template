@@ -21,38 +21,14 @@
 		"fix": "npm run fix:style && npm run fix:lint"
 	},
 	"eslintConfig": {
-		"parser": "@typescript-eslint/parser",
 		"extends": [
-			"eslint:recommended",
+			"react-app",
 			"prettier",
 			"prettier/@typescript-eslint",
-			"prettier/react",
-			"plugin:react/recommended",
-			"plugin:jsx-a11y/recommended",
-			"plugin:@typescript-eslint/eslint-recommended",
-			"plugin:@typescript-eslint/recommended"
+			"prettier/react"
 		],
-		"parserOptions": {
-			"ecmaVersion": 2015,
-			"sourceType": "module",
-			"ecmaFeatures": {
-				"jsx": true
-			},
-			"warnOnUnsupportedTypeScriptVersion": true
-		},
-		"env": {
-			"browser": true,
-			"commonjs": true,
-			"es6": true,
-			"jest": true
-		},
-		"rules": {
-			"@typescript-eslint/explicit-member-accessibility": [
-				"error"
-			]
-		},
 		"ignorePatterns": [
-			"!src/**/*.{ts,tsx}"
+			"/!(src)/**"
 		]
 	},
 	"prettier": {
