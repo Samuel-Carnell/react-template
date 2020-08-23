@@ -105,3 +105,6 @@ dist
 
 # Awesome typescript loader cache
 .awcache
+
+# Storybook
+storybook-static
