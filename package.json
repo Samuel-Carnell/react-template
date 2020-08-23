@@ -21,38 +21,14 @@
 		"fix": "npm run fix:style && npm run fix:lint"
 	},
 	"eslintConfig": {
-		"parser": "@typescript-eslint/parser",
 		"extends": [
-			"eslint:recommended",
+			"react-app",
 			"prettier",
 			"prettier/@typescript-eslint",
-			"prettier/react",
-			"plugin:react/recommended",
-			"plugin:jsx-a11y/recommended",
-			"plugin:@typescript-eslint/eslint-recommended",
-			"plugin:@typescript-eslint/recommended"
+			"prettier/react"
 		],
-		"parserOptions": {
-			"ecmaVersion": 2015,
-			"sourceType": "module",
-			"ecmaFeatures": {
-				"jsx": true
-			},
-			"warnOnUnsupportedTypeScriptVersion": true
-		},
-		"env": {
-			"browser": true,
-			"commonjs": true,
-			"es6": true,
-			"jest": true
-		},
-		"rules": {
-			"@typescript-eslint/explicit-member-accessibility": [
-				"error"
-			]
-		},
 		"ignorePatterns": [
-			"!src/**/*.{ts,tsx}"
+			"/!(src)/**"
 		]
 	},
 	"prettier": {
@@ -90,6 +66,7 @@
 		"@typescript-eslint/eslint-plugin": "^2.34.0",
 		"@typescript-eslint/parser": "^2.34.0",
 		"autoprefixer": "^9.7.6",
+		"babel-eslint": "^10.1.0",
 		"babel-loader": "^8.1.0",
 		"camelcase": "^6.0.0",
 		"clean-webpack-plugin": "^3.0.0",
@@ -99,9 +76,12 @@
 		"enzyme-adapter-react-16": "^1.15.2",
 		"eslint": "^7.0.0",
 		"eslint-config-prettier": "^6.11.0",
-		"eslint-plugin-import": "^2.20.2",
-		"eslint-plugin-jsx-a11y": "^6.2.3",
-		"eslint-plugin-react": "^7.20.0",
+		"eslint-config-react-app": "^5.2.1",
+		"eslint-plugin-flowtype": "^4.7.0",
+		"eslint-plugin-import": "^2.22.0",
+		"eslint-plugin-jsx-a11y": "^6.3.1",
+		"eslint-plugin-react": "^7.20.6",
+		"eslint-plugin-react-hooks": "^2.5.1",
 		"file-loader": "^6.0.0",
 		"html-webpack-plugin": "^4.3.0",
 		"jest": "^26.0.1",
