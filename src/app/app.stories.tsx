@@ -1,6 +1,5 @@
 import React from 'react';
 import App from './app';
-import { text } from '@storybook/addon-knobs';
 
 export default {
 	title: 'Application',
@@ -8,5 +7,5 @@ export default {
 };
 
 export const Default = (): JSX.Element => {
-	return <App name={text('App Name', 'My Awesome Project')} />;
+	return <App name={'My Awesome Application'} />;
 };
