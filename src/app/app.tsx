@@ -3,11 +3,11 @@ import Logo from 'assets/logo.svg';
 import styles from './app.styles.css';
 import './app.css';
 
-type AppProps = {
+export type AppProps = {
 	name: string;
 };
 
-function App(props: AppProps): JSX.Element {
+export const App: React.FC<AppProps> = (props) => {
 	return (
 		<div className={styles.app}>
 			<div className="flex flex-col md:flex-row">
@@ -23,6 +23,4 @@ function App(props: AppProps): JSX.Element {
 			</div>
 		</div>
 	);
-}
-
-export default App;
+};
