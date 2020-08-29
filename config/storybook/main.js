@@ -7,12 +7,7 @@ const iconPath = path.resolve(__dirname, './icon.png');
 
 module.exports = {
 	stories: [`${paths.asPosix(paths.src)}/**/*.stories.*`],
-	addons: [
-		'@storybook/addon-viewport/register',
-		'@storybook/addon-actions/register',
-		'@storybook/addon-a11y/register',
-		'@storybook/addon-knobs/register'
-	],
+	addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
 	webpackFinal: async (defaultConfig) => {
 		const customConfig = createWebpackConfig({}, { mode: 'development' });
 		const config = {

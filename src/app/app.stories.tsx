@@ -1,12 +1,15 @@
 import React from 'react';
-import App from './app';
-import { text } from '@storybook/addon-knobs';
+import { Story, Meta } from '@storybook/react';
+import { App, AppProps } from './app';
 
 export default {
-	title: 'Application',
+	title: 'App',
 	component: App
-};
+} as Meta<AppProps>;
 
-export const Default = (): JSX.Element => {
-	return <App name={text('App Name', 'My Awesome Project')} />;
+const Template: Story<AppProps> = (args) => <App {...args} />;
+
+export const Default: Story<AppProps> = Template.bind({});
+Default.args = {
+	name: 'My Awesome Application'
 };
