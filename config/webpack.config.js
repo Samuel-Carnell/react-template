@@ -67,7 +67,8 @@ module.exports = (webpackEnv, args) => {
 		entry: common.files.index,
 		stats: isDevMode ? 'normal' : 'verbose',
 		resolve: {
-			modules: common.resolveModule.rootDirs,
+			// Look for modules in the node_modules folder first to mimic NodeJs' module resolution behaviour
+			modules: ['node_modules', common.resolveModule.rootDir],
 			extensions: common.resolveModule.fileExtensions.map((ext) => `.${ext}`)
 		},
 		output: {
