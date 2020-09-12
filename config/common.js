@@ -8,7 +8,7 @@ const resolveFile = (folder, filename, extensions) => {
 		.filter(filesystemUtils.existsSync);
 	if (files.length === 0) {
 		throw new Error(
-			`Can't find file ${filename} with extension ${extensions.join(',')}`
+			`Can't find file ${pathUtils.resolve(folder, filename)} with extension ${extensions.join(',')}`
 		);
 	}
 
@@ -19,15 +19,16 @@ const files = {
 	tsConfig: resolveFile(rootDir, 'tsconfig', ['json']),
 	packageJson: resolveFile(rootDir, 'package', ['json']),
 	tailwindConfig: resolveFile(rootDir, 'tailwind.config', ['js']),
-	htmlTemplate: resolveFile(pathUtils.resolve(rootDir, 'src'), 'template' , ['html']),
-	index: resolveFile(pathUtils.resolve(rooDir, 'src'), 'index', [
+	htmlTemplate: resolveFile(pathUtils.resolve(rootDir, 'src'), 'template', [
+		'html'
+	]),
+	index: resolveFile(pathUtils.resolve(rootDir, 'src'), 'index', [
 		'ts',
 		'tsx',
 		'js',
 		'jsx'
 	])
 };
-
 
 const createNegativeLookahead = (patterns) =>
 	patterns.length > 0 ? `(?!.*(${patterns.join('|')}))` : '';
@@ -69,21 +70,20 @@ module.exports = {
 	tsConfig,
 	packageJson,
 	resolveModule: {
-		// Look for modules in the node_modules folder first to mimic NodeJs' module resolution behaviour
-		rootDirs: ['node_modules', basePath],
+		rootDir: basePath,
 		// Files will be resolved in this order to be consistent with cra
 		fileExtensions: ['mjs', 'js', 'ts', 'tsx', 'json', 'jsx']
 	},
 	regexPatterns: {
-		nodeModules: 'node_modules[\/\\\\]',
+		nodeModules: 'node_modules[/\\\\]',
 		// Ignores patterns that a have come before the current pattern.
 		// This is required to prevent unexpected errors occurring where imports are processed twice,
 		// for example with css modules being processed as a module and a standard css file.
 		// This also creates a handy fallback pattern which ignores all patterns already declared,
 		// and can be used to process unknown files.
 		...useFirstMatch({
-			internalScripts: 'src[\/\\\\].*\\.(ts|tsx|js|jsx|mjs)$',
-			externalScripts: 'node_modules[\/\\\\].*\\.js$',
+			internalScripts: 'src[/\\\\].*\\.(ts|tsx|js|jsx|mjs)$',
+			externalScripts: 'node_modules[/\\\\].*\\.js$',
 			cssModules: '\\.(styles|module)\\.css$',
 			css: '\\.css$',
 			svg: '\\.svg$',
@@ -101,5 +101,12 @@ module.exports = {
 		path: pathUtils.resolve(rootDir, 'dist'),
 		createOutputPath: (folder, extension) =>
 			`${folder}/[name].[contenthash:8].${extension}`
-	}
+	},
+	jestTransformers: {
+		cssTransform: resolveFile(pathUtils.resolve(rootDir, 'config', 'jestTransformers'), 'cssTransform', ['js']),
+		fileTransform: resolveFile(pathUtils.resolve(rootDir, 'config', 'jestTransformers'), 'fileTransform', ['js']),
+		svgTransform: resolveFile(pathUtils.resolve(rootDir, 'config', 'jestTransformers'), 'fileTransform', ['js']),
+		tsJest: pathUtils.resolve(rootDir, 'node_modules', 'ts-jest')
+	},
+
 };

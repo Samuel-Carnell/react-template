@@ -1,1 +1,3 @@
+# Prettier removes backslashes which it think are unnecessary,
+# causing issues backslashes being removed in strings containing regex paterns
 config/common.js
