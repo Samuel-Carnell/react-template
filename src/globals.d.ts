@@ -1,8 +1,9 @@
-/// <reference types="jest-enzyme" />;
+/// <reference types="node" />
+/// <reference types="react" />
+/// <reference types="react-dom" />
+/// <reference types="jest-enzyme" />
 
 declare module '*.svg' {
-	import * as React from 'react';
-
 	const ReactComponent: React.FunctionComponent<
 		React.SVGProps<SVGSVGElement> & { title?: string }
 	>;
