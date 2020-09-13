@@ -27,7 +27,8 @@ const files = {
 		'tsx',
 		'js',
 		'jsx'
-	])
+	]),
+	storybookIcon: resolveFile(pathUtils.resolve(rootDir, 'config', 'storybook'), 'icon', ['png'])
 };
 
 const createNegativeLookahead = (patterns) =>
@@ -76,6 +77,8 @@ module.exports = {
 	},
 	regexPatterns: {
 		nodeModules: 'node_modules[/\\\\]',
+		json: '\\.json',
+		ejs: '\\.ejs',
 		// Ignores patterns that a have come before the current pattern.
 		// This is required to prevent unexpected errors occurring where imports are processed twice,
 		// for example with css modules being processed as a module and a standard css file.
@@ -86,16 +89,14 @@ module.exports = {
 			externalScripts: 'node_modules[/\\\\].*\\.js$',
 			cssModules: '\\.(styles|module)\\.css$',
 			css: '\\.css$',
-			svg: '\\.svg$',
-			json: '\\.json$',
-			ejs: '\\.ejs$'
+			svg: '\\.svg$'
 		})
 	},
 	globPatterns: {
 		scripts: '**/*.{ts,tsx,js,jsx,mjs}',
 		reactScripts: '**/*.{jsx,tsx}',
 		tests: '**/*.{test,spec}.{ts,tsx,js,jsx}',
-		stories: '**/*.stories.{ts,tsx,js,jsx}'
+		stories: '**/*.{stories,story}.{ts,tsx,js,jsx}'
 	},
 	output: {
 		path: pathUtils.resolve(rootDir, 'dist'),
@@ -108,5 +109,4 @@ module.exports = {
 		svgTransform: resolveFile(pathUtils.resolve(rootDir, 'config', 'jestTransformers'), 'fileTransform', ['js']),
 		tsJest: pathUtils.resolve(rootDir, 'node_modules', 'ts-jest')
 	},
-
 };

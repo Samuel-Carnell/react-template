@@ -119,6 +119,8 @@ module.exports = (webpackEnv, args) => {
 						},
 						{
 							test: new RegExp(common.regexPatterns.fallback),
+							// JSON files are already handle by webpack
+							exclude: new RegExp(common.regexPatterns.json),
 							use: {
 								loader: 'file-loader',
 								options: {
