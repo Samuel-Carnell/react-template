@@ -15,8 +15,8 @@ const postcssImport = require('postcss-import');
 const common = require('./common');
 
 module.exports = (webpackEnv, args) => {
-	const mode = args.mode || env.NODE_ENV;
-	const isDevMode = mode !== 'production';
+	env.NODE_ENV = env.NODE_ENV || args.mode;
+	const isDevMode = env.NODE_ENV !== 'production';
 
 	const getCssLoaders = ({ useCssModules }) => [
 		{
@@ -87,21 +87,29 @@ module.exports = (webpackEnv, args) => {
 								{
 									loader: 'babel-loader',
 									options: {
-										presets: ['@babel/preset-env'],
+										presets: ['babel-preset-react-app'],
 										cacheDirectory: isDevMode,
 										cacheCompression: true,
 										babelrc: false,
-										configFile: false
-									}
-								},
-								{
-									loader: 'ts-loader',
-									options: {
-										configFile: common.files.tsConfig,
-										onlyCompileBundledFiles: true
+										configFile: false,
+										compact: !isDevMode
 									}
 								}
 							]
+						},
+						{
+							test: new RegExp(common.regexPatterns.externalScripts),
+							use: {
+								loader: 'babel-loader',
+								options: {
+									presets: ['babel-preset-react-app/dependencies'],
+									cacheDirectory: isDevMode,
+									cacheCompression: true,
+									babelrc: false,
+									configFile: false,
+									compact: false
+								}
+							}
 						},
 						{
 							test: new RegExp(common.regexPatterns.cssModules),
