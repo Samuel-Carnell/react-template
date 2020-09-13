@@ -1,3 +1,5 @@
+/// <reference types="jest-enzyme" />;
+
 declare module '*.svg' {
 	import * as React from 'react';
 

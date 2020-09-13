@@ -1,25 +1,30 @@
-const paths = require('./paths');
+const common = require('./common');
 
 module.exports = {
-	rootDir: paths.root,
+	rootDir: common.rootDir,
 	roots: ['<rootDir>/src/'],
-	collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts'],
-	setupFilesAfterEnv: ['<rootDir>/config/jest/setupTests.js'],
-	testMatch: [
-		'<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
-		'<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'
+	collectCoverageFrom: [
+		`<rootDir>/src/${common.globPatterns.scripts}`,
+		'!<rootDir>/src/**/*.d.ts'
 	],
-	testEnvironment: 'jest-environment-jsdom-fourteen',
-	transform: {
-		'^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/ts-jest',
-		'^.+\\.css$': '<rootDir>/config/jest/cssTransform.js',
-		'^(?!.*\\.(js|jsx|ts|tsx|css|json)$)':
-			'<rootDir>/config/jest/fileTransform.js'
+	setupFilesAfterEnv: ['jest-enzyme'],
+	testEnvironment: 'enzyme',
+	testEnvironmentOptions: {
+		enzymeAdapter: 'react16'
 	},
-	transformIgnorePatterns: [
-		'[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$',
-		'^.+\\.module\\.(css|sass|scss)$'
+	testMatch: [
+		`<rootDir>/src/**/__tests__/${common.globPatterns.scripts}`,
+		`<rootDir>/src/${common.globPatterns.tests}`
 	],
-	moduleDirectories: ['<rootDir>/src/', 'node_modules'],
-	moduleFileExtensions: ['js', 'ts', 'tsx', 'json', 'jsx', 'node']
+	transform: {
+		[common.regexPatterns.internalScripts]: common.jestTransformers.tsJest,
+		[common.regexPatterns.css]: common.jestTransformers.cssTransform,
+		[common.regexPatterns.svg]: common.jestTransformers.svgTransform,
+		[common.regexPatterns.fallback]: common.jestTransformers.fileTransform
+	},
+	moduleNameMapper: {
+		[common.regexPatterns.cssModules]: 'identity-obj-proxy'
+	},
+	moduleFileExtensions: common.resolveModule.fileExtensions,
+	modulePaths: [`<rootDir>${common.resolveModule.rootDir}`]
 };

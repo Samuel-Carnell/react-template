@@ -1,15 +1,19 @@
-const path = require('path');
-const paths = require('../paths');
+const pathUtils = require('path');
+const common = require('../common');
 const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 const createWebpackConfig = require('../webpack.config');
 
-const iconPath = path.resolve(__dirname, './icon.png');
+const { storybookIcon } = common.files;
+const relativeFromRoot = pathUtils
+	.relative(__dirname, common.rootDir)
+	.split(pathUtils.sep)
+	.join('/');
 
 module.exports = {
-	stories: [`${paths.asPosix(paths.src)}/**/*.stories.*`],
+	stories: [`${relativeFromRoot}/src${common.globPatterns.stories}`],
 	addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
 	webpackFinal: async (defaultConfig) => {
-		const customConfig = createWebpackConfig({}, { mode: 'development' });
+		const customConfig = createWebpackConfig(null, { mode: 'development' });
 		const config = {
 			...defaultConfig,
 			resolve: {
@@ -20,7 +24,8 @@ module.exports = {
 				...defaultConfig.module,
 				rules: [
 					{
-						exclude: paths.hasExtension('ejs'),
+						// Storybook imports ejs files internally, so they need to be excluded to prevent them from being processed by the file loader
+						exclude: new RegExp(common.regexPatterns.ejs),
 						rules: customConfig.module.rules
 					}
 				]
@@ -29,15 +34,16 @@ module.exports = {
 				...defaultConfig.plugins,
 				new WebpackBuildNotifierPlugin({
 					title: 'Storybook',
-					successIcon: iconPath,
-					warningIcon: iconPath,
-					failureIcon: iconPath,
-					compileIcon: iconPath,
+					successIcon: storybookIcon,
+					warningIcon: storybookIcon,
+					failureIcon: storybookIcon,
+					compileIcon: storybookIcon,
 					suppressSuccess: true,
 					suppressWarning: true
 				})
 			]
 		};
+
 		return config;
 	}
 };

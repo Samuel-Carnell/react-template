@@ -12,48 +12,7 @@ const postcssNormalize = require('postcss-normalize');
 const tailwind = require('tailwindcss');
 const purgecss = require('@fullhuman/postcss-purgecss');
 const postcssImport = require('postcss-import');
-const paths = require('./paths');
-
-const appPackage = require(paths.packageJson);
-const tsConfig = require(paths.tsConfig);
-
-const getTsConfigBasePath = () => {
-	const { compilerOptions } = tsConfig;
-	if (compilerOptions == null || compilerOptions.baseUrl == null) {
-		return null;
-	}
-
-	return compilerOptions.baseUrl;
-};
-
-const getBasePathsToResolveFrom = () => {
-	const tsConfigBasePath = getTsConfigBasePath();
-	return [
-		...(tsConfigBasePath === null ? [] : [tsConfigBasePath]),
-		'node_modules'
-	];
-};
-
-const useFirstMatch = (moduleRules) => {
-	let matchedConditions = [];
-	return moduleRules.map(({ test, use, ...moduleRule }) => {
-		const excludeMatchedConditions = { not: matchedConditions };
-
-		const moduleRuleExcludingMatchedConditions = {
-			test:
-				test == null
-					? excludeMatchedConditions
-					: {
-							and: [test, excludeMatchedConditions]
-					  },
-			use: Array.isArray(use) ? use : [use],
-			...moduleRule
-		};
-
-		matchedConditions = [...matchedConditions, test];
-		return moduleRuleExcludingMatchedConditions;
-	});
-};
+const common = require('./common');
 
 module.exports = (webpackEnv, args) => {
 	const mode = args.mode || env.NODE_ENV;
@@ -84,8 +43,8 @@ module.exports = (webpackEnv, args) => {
 				ident: 'postcss',
 				plugins: () => [
 					postcssImport({
-						root: paths.root,
-						path: getBasePathsToResolveFrom()
+						root: common.rootDir,
+						path: common.resolveModule.rootDirs
 					}),
 					tailwind(),
 					autoPrefixer(),
@@ -103,29 +62,27 @@ module.exports = (webpackEnv, args) => {
 		}
 	];
 
-	const getFilename = () => (isDevMode ? '[name]' : '[name].[contenthash:8]');
-
 	return {
-		context: paths.root,
+		context: common.rootDir,
+		entry: common.files.index,
 		stats: isDevMode ? 'normal' : 'verbose',
 		resolve: {
-			modules: getBasePathsToResolveFrom(),
-			extensions: ['.tsx', '.ts', '.js', '.jsx']
+			// Look for modules in the node_modules folder first to mimic NodeJs' module resolution behaviour
+			modules: ['node_modules', common.resolveModule.rootDir],
+			extensions: common.resolveModule.fileExtensions.map((ext) => `.${ext}`)
 		},
 		output: {
-			path: paths.build,
-			filename: `js/${getFilename()}.js`,
-			chunkFilename: `js/${getFilename()}.chunk.js`
+			path: common.output.path,
+			filename: common.output.createOutputPath('js', 'js'),
+			chunkFilename: common.output.createOutputPath('js', 'chunk.js')
 		},
 		devtool: isDevMode ? 'cheap-module-source-map' : 'source-map',
 		module: {
 			rules: [
 				{
-					exclude: [paths.htmlTemplate, paths.hasExtension('json')],
-					oneOf: useFirstMatch([
+					oneOf: [
 						{
-							test: paths.hasExtension('tsx', 'ts', 'jsx', 'mjs', 'js'),
-							include: paths.src,
+							test: new RegExp(common.regexPatterns.internalScripts),
 							use: [
 								{
 									loader: 'babel-loader',
@@ -140,35 +97,38 @@ module.exports = (webpackEnv, args) => {
 								{
 									loader: 'ts-loader',
 									options: {
-										configFile: paths.tsConfig,
+										configFile: common.files.tsConfig,
 										onlyCompileBundledFiles: true
 									}
 								}
 							]
 						},
 						{
-							test: paths.hasExtension('styles.css', 'module.css'),
+							test: new RegExp(common.regexPatterns.cssModules),
 							use: getCssLoaders({ useCssModules: true })
 						},
 						{
-							test: paths.hasExtension('css'),
+							test: new RegExp(common.regexPatterns.css),
 							use: getCssLoaders({ useCssModules: false })
 						},
 						{
-							test: paths.hasExtension('svg'),
+							test: new RegExp(common.regexPatterns.svg),
 							use: {
 								loader: '@svgr/webpack'
 							}
 						},
 						{
+							test: new RegExp(common.regexPatterns.fallback),
+							// JSON files are already handle by webpack
+							exclude: new RegExp(common.regexPatterns.json),
 							use: {
 								loader: 'file-loader',
 								options: {
-									name: 'assets/[name].[hash:8].[ext]'
+									name: common.output.createOutputPath('assets', '[ext]')
 								}
 							}
 						}
-					])
+					]
 				}
 			]
 		},
@@ -205,7 +165,7 @@ module.exports = (webpackEnv, args) => {
 		},
 		plugins: [
 			new HtmlWebpackPlugin({
-				template: paths.htmlTemplate,
+				template: common.files.htmlTemplate,
 				...(isDevMode
 					? {}
 					: {
@@ -233,8 +193,8 @@ module.exports = (webpackEnv, args) => {
 				? []
 				: [
 						new MiniCssExtractPlugin({
-							filename: `css/${getFilename()}.css`,
-							chunkFilename: `css/${getFilename()}.chunk.css`
+							filename: common.output.createOutputPath('css', 'css'),
+							chunkFilename: common.output.createOutputPath('css', 'chunk.css')
 						}),
 						new ManifestPlugin({
 							fileName: 'manifest.json',
@@ -268,7 +228,7 @@ module.exports = (webpackEnv, args) => {
 			open: true
 		},
 		watchOptions: {
-			ignored: /node_modules/
+			ignored: new RegExp(common.regexPatterns.nodeModules)
 		}
 	};
 };
