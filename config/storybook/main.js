@@ -10,7 +10,7 @@ const relativeFromRoot = pathUtils
 	.join('/');
 
 module.exports = {
-	stories: [`${relativeFromRoot}/src${common.globPatterns.stories}`],
+	stories: [`${relativeFromRoot}/src/${common.globPatterns.stories}`],
 	addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
 	webpackFinal: async (defaultConfig) => {
 		const customConfig = createWebpackConfig(null, { mode: 'development' });

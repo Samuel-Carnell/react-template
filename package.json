@@ -3,8 +3,8 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"build:dev": "webpack --config config/webpack.config.js --mode development src/index.tsx",
-		"build:prod": "webpack --config config/webpack.config.js --mode production src/index.tsx",
+		"build:dev": "webpack --config config/webpack.config.js --mode development",
+		"build:prod": "webpack --config config/webpack.config.js --mode production",
 		"build:storybook": "build-storybook -config-dir ./config/storybook",
 		"serve:dev": "webpack-dev-server --config config/webpack.config.js --port 8080",
 		"serve:docs": "docsify serve --open --port 8081",
